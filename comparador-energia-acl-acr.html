@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACL × ACR — Comparador de Energia (Mercado Livre × Cativo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ECF1F2;
+  --panel:#FFFFFF;
+  --ink:#0E1B22;
+  --muted:#5B6B72;
+  --line:#D5DEE1;
+  --blue:#0B5BD3;        /* Mercado Livre (ACL) */
+  --blue-soft:#E4EDFB;
+  --steel:#26414D;       /* Cativo (ACR) */
+  --steel-soft:#E6ECEE;
+  --verde:#1E9E5A;
+  --amarela:#D99A06;
+  --vermelha:#C93A2B;
+  --radius:14px;
+  --mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans:'Archivo', system-ui, -apple-system, Segoe UI, sans-serif;
+  --display:'Archivo Black', 'Archivo', system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *,*::before,*::after{animation:none!important;transition:none!important} }
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.5;
+}
+a{color:var(--blue)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* ---------- header ---------- */
+header{padding:40px 0 26px; border-bottom:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+h1{font-family:var(--display);font-size:clamp(30px,5vw,52px);line-height:1.02;margin:0 0 12px;letter-spacing:-0.01em}
+h1 .acl{color:var(--blue)} h1 .x{color:var(--muted);font-family:var(--mono);font-weight:400;font-size:.6em;vertical-align:middle;padding:0 .15em}
+.lede{max-width:62ch;color:var(--muted);margin:0}
+.lede strong{color:var(--ink)}
+
+/* ---------- generic panel ---------- */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+.panel h2{font-family:var(--sans);font-weight:700;font-size:15px;letter-spacing:.02em;margin:0 0 4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.panel h2 .tag{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.1em;padding:3px 8px;border-radius:999px}
+.panel .hint{color:var(--muted);font-size:13px;margin:0 0 16px}
+
+/* ---------- fields ---------- */
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{font-size:12.5px;font-weight:600;color:var(--ink)}
+.field .sub{font-weight:400;color:var(--muted)}
+.field input,.field select{
+  font-family:var(--mono);font-size:14px;color:var(--ink);
+  background:#FBFDFD;border:1px solid var(--line);border-radius:9px;padding:9px 11px;width:100%;
+}
+.field input:focus-visible,.field select:focus-visible, button:focus-visible{outline:2.5px solid var(--blue);outline-offset:2px}
+.frow{display:grid;gap:12px}
+.frow.c2{grid-template-columns:1fr 1fr}
+.frow.c3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:640px){.frow.c2,.frow.c3{grid-template-columns:1fr}}
+
+/* ---------- section: perfil ---------- */
+#perfil{margin-top:26px}
+.mode{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:#F5F8F9;margin-bottom:16px;flex-wrap:wrap}
+.mode button{
+  border:0;background:transparent;font-family:var(--sans);font-weight:600;font-size:13px;
+  color:var(--muted);padding:7px 16px;border-radius:999px;cursor:pointer
+}
+.mode button[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+/* abertura BT */
+.abertura{
+  margin-top:12px;border:1px solid #BFD3EC;background:#EBF2FC;border-radius:10px;
+  padding:12px 14px;font-size:13px;color:#123B6E
+}
+.abertura b{color:#0A2C57}
+.abertura .cd{font-family:var(--mono);font-weight:600;background:#fff;border:1px solid #BFD3EC;border-radius:6px;padding:1px 7px}
+
+/* ---------- bandeira ---------- */
+.bandeiras{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.bandeira{
+  position:relative;border:1.5px solid var(--line);background:#fff;border-radius:10px;
+  padding:10px 14px 10px 34px;font-family:var(--sans);font-weight:600;font-size:13px;cursor:pointer;color:var(--ink)
+}
+.bandeira::before{
+  content:"";position:absolute;left:12px;top:50%;transform:translateY(-58%);
+  width:13px;height:9px;background:var(--bf,#ccc);
+  clip-path:polygon(0 0,100% 0,82% 50%,100% 100%,0 100%);
+  box-shadow:-3px 4px 0 -3px var(--ink);
+}
+.bandeira[data-b="verde"]{--bf:var(--verde)}
+.bandeira[data-b="amarela"]{--bf:var(--amarela)}
+.bandeira[data-b="verm1"]{--bf:var(--vermelha)}
+.bandeira[data-b="verm2"]{--bf:#8E1F13}
+.bandeira[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.band-note{font-size:12.5px;color:var(--muted);margin-top:10px}
+.band-note .sug{font-family:var(--mono);font-size:11px;background:#F0F4F5;border:1px solid var(--line);border-radius:6px;padding:2px 6px}
+
+/* ---------- duelo ---------- */
+#duelo{margin-top:22px;position:relative}
+.duel{display:grid;grid-template-columns:1fr 1fr;gap:18px;position:relative}
+@media(max-width:860px){.duel{grid-template-columns:1fr}}
+.side-acr h2 .tag{background:var(--steel-soft);color:var(--steel)}
+.side-acl h2 .tag{background:var(--blue-soft);color:var(--blue)}
+.side-acr{border-top:4px solid var(--steel)}
+.side-acl{border-top:4px solid var(--blue)}
+.divisor{
+  position:absolute;left:50%;top:8px;transform:translateX(-50%);
+  font-family:var(--mono);font-size:11px;color:var(--muted);
+  background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 10px;z-index:2
+}
+@media(max-width:860px){.divisor{display:none}}
+.mini-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px;margin-top:6px}
+.mini-table td{padding:4px 0;border-bottom:1px dashed var(--line)}
+.mini-table td:last-child{text-align:right}
+
+/* checklist ACL */
+.check{margin-top:16px;border:1px solid var(--line);border-radius:10px;background:#F8FBFC;padding:14px}
+.check h3{margin:0 0 2px;font-size:13px}
+.check p{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+.check ul{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.check li{display:flex;gap:9px;align-items:flex-start;font-size:13px}
+.check input{margin-top:3px;accent-color:var(--blue)}
+.check li span b{font-weight:600}
+.check li span i{font-style:normal;color:var(--muted)}
+
+/* ---------- veredito ---------- */
+#veredito{margin-top:22px;background:var(--ink);color:#EAF2F4;border:0;overflow:hidden}
+#veredito h2{color:#EAF2F4}
+.ver-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:26px;align-items:center}
+@media(max-width:860px){.ver-grid{grid-template-columns:1fr}}
+.odometro{font-family:var(--mono)}
+.odometro .lbl{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#9FB4BC;margin-bottom:6px}
+.odometro .num{
+  font-size:clamp(38px,6vw,62px);font-weight:700;letter-spacing:.02em;line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+.odometro .num.pos{color:#5FE3A1}
+.odometro .num.neg{color:#FF8A75}
+.odometro .per{font-size:14px;color:#9FB4BC;margin-top:6px}
+.odometro .anual{font-size:13px;color:#C9D8DD;margin-top:14px;border-top:1px solid #2C4652;padding-top:12px}
+.verdict-text{font-size:14px;color:#C9D8DD;margin-top:14px;max-width:52ch}
+.verdict-text b{color:#fff}
+.caveat{margin-top:12px;font-size:12.5px;color:#FFD9A8;display:none}
+.caveat.show{display:block}
+
+.gauge{display:grid;gap:14px}
+.gbar{display:grid;gap:5px}
+.gbar .glab{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:#9FB4BC}
+.gbar .glab b{color:#fff;font-weight:600}
+.track{height:26px;border-radius:7px;background:#203843;overflow:hidden;display:flex}
+.seg{height:100%;min-width:0;transition:width .45s ease}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11.5px;font-family:var(--mono);color:#9FB4BC;margin-top:2px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+/* seg colors */
+.c-dem{background:#6A8794}.c-fio{background:#93ADB8}.c-te{background:#C9D8DD}
+.c-band{background:var(--amarela)}.c-tax{background:#41606E}
+.c-en{background:#5B9BFF}.c-enc{background:#2F6FD8}.c-ges{background:#8FB5FF}
+
+/* ---------- resumo tarifas + fontes ---------- */
+#resumo{margin-top:22px}
+.res-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+@media(max-width:860px){.res-grid{grid-template-columns:1fr}}
+.kv{width:100%;border-collapse:collapse;font-size:13px}
+.kv th{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 0;border-bottom:1px solid var(--line)}
+.kv td{padding:6px 0;border-bottom:1px dashed var(--line)}
+.kv td:last-child{font-family:var(--mono);text-align:right}
+.fontes ul{margin:8px 0 0;padding-left:18px;font-size:13px}
+.fontes li{margin-bottom:6px}
+.aviso{
+  margin-top:18px;border:1px solid #E4C78A;background:#FBF4E3;border-radius:10px;
+  padding:14px 16px;font-size:13px;color:#5C4A1E
+}
+.aviso b{color:#3E3110}
+
+/* ---------- importador CSV ---------- */
+#importar{margin-top:22px}
+.imp-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+@media(max-width:860px){.imp-grid{grid-template-columns:1fr}}
+.dropzone{
+  border:1.5px dashed var(--line);border-radius:12px;background:#F8FBFC;
+  padding:22px;text-align:center;cursor:pointer;transition:border-color .15s
+}
+.dropzone:hover,.dropzone.drag{border-color:var(--blue)}
+.dropzone p{margin:6px 0 0;font-size:12.5px;color:var(--muted)}
+.dropzone .big{font-size:14px;font-weight:600;color:var(--ink);margin:0}
+.dropzone input{display:none}
+.csv-status{font-family:var(--mono);font-size:12.5px;margin-top:12px;color:var(--muted);min-height:18px}
+.csv-status.ok{color:var(--verde)}
+.csv-status.err{color:var(--vermelha)}
+.csv-apply{margin-top:12px;display:none;gap:10px;align-items:end}
+.csv-apply.show{display:grid;grid-template-columns:1fr auto}
+@media(max-width:640px){.csv-apply.show{grid-template-columns:1fr}}
+.btn{
+  font-family:var(--sans);font-weight:700;font-size:13.5px;color:#fff;background:var(--blue);
+  border:0;border-radius:9px;padding:10px 18px;cursor:pointer
+}
+.btn:hover{background:#0A4FB8}
+.csv-meta{font-size:12.5px;color:var(--muted);margin-top:10px}
+.csv-meta b{color:var(--ink)}
+.origem-chip{
+  display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+  border-radius:6px;padding:2px 8px;border:1px solid var(--line);background:#F0F4F5;color:var(--muted)
+}
+.origem-chip.csv{background:#E6F5EC;border-color:#A8D9BD;color:#116237}
+ol.passos{margin:10px 0 0;padding-left:20px;font-size:13px;color:var(--muted)}
+ol.passos li{margin-bottom:7px}
+ol.passos b{color:var(--ink)}
+
+footer{padding:34px 0 46px;color:var(--muted);font-size:12.5px}
+footer .wrap{border-top:1px solid var(--line);padding-top:18px}
+.btn-reset{
+  font-family:var(--sans);font-weight:600;font-size:12.5px;color:var(--muted);
+  background:transparent;border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer
+}
+.btn-reset:hover{color:var(--ink);border-color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">Setor elétrico brasileiro · simulador de contratação</p>
+    <h1><span class="acl">Mercado Livre</span><span class="x">×</span>Cativo</h1>
+    <p class="lede">Compare o custo mensal da sua energia no <strong>Ambiente de Contratação Livre (ACL)</strong> — com preço de PLD/CCEE ou proposta de uma comercializadora — contra a tarifa da sua <strong>distribuidora no mercado cativo (ACR)</strong>, incluindo a bandeira tarifária vigente. Todos os valores podem ser editados, e você pode <a href="#importar">importar o CSV oficial da ANEEL</a> para usar tarifas homologadas reais.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ===================== PERFIL ===================== -->
+  <section id="perfil" class="panel" aria-labelledby="h-perfil">
+    <h2 id="h-perfil">1 · Perfil de consumo</h2>
+    <p class="hint">Escolha o grupo tarifário e informe seu consumo. O modo Grupo A segue a estrutura horossazonal Verde (média tensão); o modo Baixa Tensão simula a futura abertura do mercado livre ao Grupo B.</p>
+
+    <div class="mode" role="group" aria-label="Modo de simulação">
+      <button id="mode-det" aria-pressed="true">Grupo A · média tensão</button>
+      <button id="mode-bt" aria-pressed="false">Baixa Tensão · Grupo B</button>
+    </div>
+
+    <div class="frow c3" id="row-det">
+      <div class="field">
+        <label for="consumo">Consumo mensal <span class="sub">· MWh</span></label>
+        <input type="number" id="consumo" value="150" min="0" step="1">
+      </div>
+      <div class="field">
+        <label for="pctponta">Consumo na ponta <span class="sub">· % do total</span></label>
+        <input type="number" id="pctponta" value="8" min="0" max="100" step="0.5">
+      </div>
+      <div class="field">
+        <label for="demanda">Demanda contratada <span class="sub">· kW</span></label>
+        <input type="number" id="demanda" value="300" min="0" step="1">
+      </div>
+    </div>
+
+    <div id="row-bt" style="display:none">
+      <div class="frow c2">
+        <div class="field">
+          <label for="consumo-kwh">Consumo mensal <span class="sub">· kWh</span></label>
+          <input type="number" id="consumo-kwh" value="2500" min="0" step="50">
+        </div>
+        <div class="field">
+          <label for="classe-bt">Classe de consumo <span class="sub">· define o subgrupo e a data de abertura</span></label>
+          <select id="classe-bt">
+            <option value="b3-com">Comercial · B3 — abre nov/2027</option>
+            <option value="b3-ind">Pequena indústria · B3 — abre nov/2027</option>
+            <option value="b1">Residencial · B1 — abre nov/2028</option>
+            <option value="b2">Rural · B2 — abre nov/2028</option>
+          </select>
+        </div>
+      </div>
+      <div class="abertura" id="abertura"></div>
+    </div>
+
+    <div class="frow c2" style="margin-top:14px">
+      <div class="field">
+        <label for="disco">Distribuidora (cativo) <span class="sub">· define tarifas de referência e ICMS</span></label>
+        <select id="disco"></select>
+      </div>
+      <div class="frow c2">
+        <div class="field">
+          <label for="icms">ICMS <span class="sub">· %</span></label>
+          <input type="number" id="icms" value="18" min="0" max="40" step="0.5">
+        </div>
+        <div class="field">
+          <label for="piscofins">PIS/COFINS <span class="sub">· % (varia mensalmente)</span></label>
+          <input type="number" id="piscofins" value="4.2" min="0" max="15" step="0.1">
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:18px">
+      <label style="font-size:12.5px;font-weight:600">Bandeira tarifária do mês</label>
+      <div class="bandeiras" role="group" aria-label="Bandeira tarifária">
+        <button class="bandeira" data-b="verde"  aria-pressed="false">Verde</button>
+        <button class="bandeira" data-b="amarela" aria-pressed="false">Amarela</button>
+        <button class="bandeira" data-b="verm1" aria-pressed="false">Vermelha · P1</button>
+        <button class="bandeira" data-b="verm2" aria-pressed="false">Vermelha · P2</button>
+      </div>
+      <p class="band-note" id="band-note"></p>
+      <div class="frow c3" style="margin-top:10px">
+        <div class="field">
+          <label for="ad-amarela">Adicional amarela <span class="sub">· R$/100 kWh</span></label>
+          <input type="number" id="ad-amarela" value="1.885" step="0.001">
+        </div>
+        <div class="field">
+          <label for="ad-verm1">Adicional vermelha P1 <span class="sub">· R$/100 kWh</span></label>
+          <input type="number" id="ad-verm1" value="4.463" step="0.001">
+        </div>
+        <div class="field">
+          <label for="ad-verm2">Adicional vermelha P2 <span class="sub">· R$/100 kWh</span></label>
+          <input type="number" id="ad-verm2" value="7.877" step="0.001">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DUELO ===================== -->
+  <section id="duelo" aria-label="Parâmetros dos dois ambientes">
+    <div class="duel">
+      <span class="divisor">— versus —</span>
+
+      <!-- CATIVO -->
+      <div class="panel side-acr" aria-labelledby="h-acr">
+        <h2 id="h-acr">2 · Cativo <span class="tag">ACR · distribuidora</span> <span class="origem-chip" id="origem-chip">referência embutida</span></h2>
+        <p class="hint">Tarifas homologadas pela ANEEL (sem impostos). Confira na sua fatura, edite os campos ou <a href="#importar">importe o CSV oficial</a> para preencher automaticamente.</p>
+
+        <div id="acr-det">
+          <div class="frow c2">
+            <div class="field">
+              <label for="tusd-d">TUSD demanda <span class="sub">· R$/kW</span></label>
+              <input type="number" id="tusd-d" step="0.01">
+            </div>
+            <div class="field">
+              <label for="te-p">TE ponta <span class="sub">· R$/MWh</span></label>
+              <input type="number" id="te-p" step="0.01">
+            </div>
+            <div class="field">
+              <label for="tusd-p">TUSD ponta <span class="sub">· R$/MWh</span></label>
+              <input type="number" id="tusd-p" step="0.01">
+            </div>
+            <div class="field">
+              <label for="te-fp">TE fora ponta <span class="sub">· R$/MWh</span></label>
+              <input type="number" id="te-fp" step="0.01">
+            </div>
+            <div class="field">
+              <label for="tusd-fp">TUSD fora ponta <span class="sub">· R$/MWh</span></label>
+              <input type="number" id="tusd-fp" step="0.01">
+            </div>
+          </div>
+        </div>
+
+        <div id="acr-bt" style="display:none">
+          <div class="frow c2">
+            <div class="field">
+              <label for="tarifa-cheia">Tarifa cheia (TE + TUSD) <span class="sub">· R$/kWh, sem impostos</span></label>
+              <input type="number" id="tarifa-cheia" step="0.001">
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <p class="hint" style="margin:0">Modalidade Convencional do subgrupo selecionado. Ao importar o CSV, o valor vem da linha B correspondente à sua classe.</p>
+            </div>
+          </div>
+        </div>
+
+        <table class="mini-table" aria-label="Composição do custo cativo">
+          <tbody id="acr-break"></tbody>
+        </table>
+      </div>
+
+      <!-- MERCADO LIVRE -->
+      <div class="panel side-acl" aria-labelledby="h-acl">
+        <h2 id="h-acl">3 · Mercado Livre <span class="tag">ACL · comercializadora</span></h2>
+        <p class="hint">Use o <b>PLD</b> (preço de liquidação da CCEE) como referência ou o preço ofertado pela sua comercializadora. No ACL você continua pagando o "fio" (TUSD) à distribuidora.</p>
+
+        <div class="frow c2">
+          <div class="field">
+            <label for="preco-en">Preço da energia <span class="sub">· R$/MWh</span></label>
+            <input type="number" id="preco-en" value="180" step="1">
+          </div>
+          <div class="field">
+            <label for="flex">Prêmio flex./sazo. <span class="sub">· % sobre a energia</span></label>
+            <input type="number" id="flex" value="0" step="0.5">
+          </div>
+          <div class="field">
+            <label for="perdas">Perdas (rede básica) <span class="sub">· %</span></label>
+            <input type="number" id="perdas" value="3" step="0.1">
+          </div>
+          <div class="field">
+            <label for="encargos">Encargos setoriais (ESS/EER) <span class="sub">· R$/MWh</span></label>
+            <input type="number" id="encargos" value="15" step="1">
+          </div>
+          <div class="field">
+            <label for="gestao">Gestão / consultoria <span class="sub">· R$/mês</span></label>
+            <input type="number" id="gestao" value="1500" step="50">
+          </div>
+          <div class="field">
+            <label for="ccee">CCEE (adesão rateada + contrib.) <span class="sub">· R$/mês</span></label>
+            <input type="number" id="ccee" value="250" step="10">
+          </div>
+        </div>
+        <div class="frow c2" style="margin-top:12px">
+          <div class="field">
+            <label for="incentivada" style="display:flex;gap:8px;align-items:center;cursor:pointer">
+              <input type="checkbox" id="incentivada" style="width:auto;accent-color:var(--blue)">
+              Energia incentivada (50% de desconto na TUSD)
+            </label>
+          </div>
+          <div class="field" id="fio-bt-wrap" style="display:none">
+            <label for="fio-bt">Fio estimado no ACL (TUSD BT) <span class="sub">· R$/kWh</span></label>
+            <input type="number" id="fio-bt" step="0.001">
+          </div>
+        </div>
+
+        <table class="mini-table" aria-label="Composição do custo no mercado livre">
+          <tbody id="acl-break"></tbody>
+        </table>
+
+        <div class="check">
+          <h3>O preço da comercializadora já contempla…?</h3>
+          <p>No mercado livre, o preço "de tela" raramente é o preço final. Marque o que já está incluído na proposta — itens desmarcados geram um alerta no veredito.</p>
+          <ul id="checklist">
+            <li><input type="checkbox" id="ck-flex" checked><span><b>Flexibilidade</b> · <i>margem para consumir acima/abaixo do contratado sem penalidade</i></span></li>
+            <li><input type="checkbox" id="ck-sazo" checked><span><b>Sazonalização</b> · <i>redistribuir o volume entre os meses do ano</i></span></li>
+            <li><input type="checkbox" id="ck-mod" checked><span><b>Modulação</b> · <i>perfil horário de consumo (carga pesada/leve)</i></span></li>
+            <li><input type="checkbox" id="ck-perdas" checked><span><b>Perdas da rede básica</b> · <i>≈ 3% sobre o volume consumido</i></span></li>
+            <li><input type="checkbox" id="ck-enc" checked><span><b>Encargos de liquidação</b> · <i>ESS, EER e exposições na CCEE</i></span></li>
+            <li><input type="checkbox" id="ck-gar" checked><span><b>Garantias financeiras</b> · <i>aportes e lastro exigidos pela CCEE</i></span></li>
+            <li><input type="checkbox" id="ck-takeorpay" checked><span><b>Take-or-pay / cláusulas de saída</b> · <i>multas por rescisão ou volume mínimo</i></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== VEREDITO ===================== -->
+  <section id="veredito" class="panel" aria-labelledby="h-ver" aria-live="polite">
+    <h2 id="h-ver">4 · Veredito</h2>
+    <div class="ver-grid">
+      <div class="odometro">
+        <div class="lbl" id="ver-lbl">Diferença mensal</div>
+        <div class="num" id="ver-num">R$ 0,00</div>
+        <div class="per" id="ver-per">—</div>
+        <div class="anual" id="ver-anual">—</div>
+        <p class="verdict-text" id="ver-texto"></p>
+        <p class="caveat" id="ver-caveat">⚠ Atenção: há custos típicos do mercado livre marcados como <b>não incluídos</b> na proposta (veja o checklist). O resultado acima pode estar subestimando o custo do ACL.</p>
+      </div>
+      <div class="gauge">
+        <div class="gbar">
+          <div class="glab"><span>Cativo (ACR)</span><b id="g-acr-val">—</b></div>
+          <div class="track" id="g-acr"></div>
+        </div>
+        <div class="gbar">
+          <div class="glab"><span>Mercado Livre (ACL)</span><b id="g-acl-val">—</b></div>
+          <div class="track" id="g-acl"></div>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== IMPORTAR CSV ===================== -->
+  <section id="importar" class="panel" aria-labelledby="h-imp">
+    <h2 id="h-imp">5 · Importar tarifas oficiais da ANEEL <span class="tag" style="background:#E6F5EC;color:#116237">CSV · dados abertos</span></h2>
+    <p class="hint">Substitua as referências embutidas pelas tarifas homologadas reais, direto do arquivo oficial. Tudo é processado localmente no seu navegador — nada é enviado a servidor algum.</p>
+    <div class="imp-grid">
+      <div>
+        <ol class="passos">
+          <li>Acesse <a href="https://dadosabertos.aneel.gov.br/dataset/tarifas-homologadas-distribuidoras-energia-eletrica" target="_blank" rel="noopener">o conjunto "Tarifas homologadas das distribuidoras"</a> nos Dados Abertos da ANEEL.</li>
+          <li>Baixe o recurso <b>CSV</b> (arquivo único com todas as distribuidoras; pode ter dezenas de MB).</li>
+          <li>Carregue o arquivo ao lado. O simulador lê em blocos, filtra a <b>Tarifa de Aplicação</b> dos subgrupos A4 (Verde) e B1/B2/B3 (Convencional) e detecta a vigência mais recente.</li>
+          <li>Escolha a distribuidora (<b>SigAgente</b>) encontrada no arquivo e aplique.</li>
+        </ol>
+      </div>
+      <div>
+        <label class="dropzone" id="dropzone" for="csv-file">
+          <p class="big">Arraste o CSV da ANEEL aqui</p>
+          <p>ou clique para escolher o arquivo (.csv, separado por ponto e vírgula)</p>
+          <input type="file" id="csv-file" accept=".csv,text/csv">
+        </label>
+        <div class="csv-status" id="csv-status"></div>
+        <div class="csv-apply" id="csv-apply">
+          <div class="field">
+            <label for="csv-agente">Distribuidora encontrada no CSV</label>
+            <select id="csv-agente"></select>
+          </div>
+          <button class="btn" id="csv-aplicar" type="button">Aplicar tarifas</button>
+        </div>
+        <div class="csv-meta" id="csv-meta"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RESUMO / FONTES ===================== -->
+  <section id="resumo" class="panel" aria-labelledby="h-res">
+    <h2 id="h-res">6 · Tarifas e premissas usadas no cálculo</h2>
+    <div class="res-grid">
+      <div>
+        <table class="kv">
+          <thead><tr><th>Item</th><th>Valor aplicado</th></tr></thead>
+          <tbody id="kv-body"></tbody>
+        </table>
+      </div>
+      <div class="fontes">
+        <p class="hint" style="margin-bottom:0">Fontes oficiais para atualizar os valores:</p>
+        <ul>
+          <li><a href="https://dadosabertos.aneel.gov.br/dataset/tarifas-homologadas-distribuidoras-energia-eletrica" target="_blank" rel="noopener">ANEEL · Dados Abertos — Tarifas homologadas das distribuidoras</a> (TE e TUSD por subgrupo e modalidade)</li>
+          <li><a href="https://dadosabertos.aneel.gov.br/dataset/bandeiras-tarifarias" target="_blank" rel="noopener">ANEEL · Dados Abertos — Bandeiras tarifárias</a> (acionamento mensal e valor dos adicionais)</li>
+          <li><a href="https://www.ccee.org.br/precos/painel-precos" target="_blank" rel="noopener">CCEE — Painel de Preços (PLD)</a> (preço horário/mensal por submercado)</li>
+          <li><a href="https://www.gov.br/aneel" target="_blank" rel="noopener">ANEEL — Bandeira vigente do mês</a> (divulgada no fim do mês anterior)</li>
+        </ul>
+        <button class="btn-reset" id="btn-reset" type="button">Restaurar valores de referência</button>
+      </div>
+    </div>
+
+    <div class="aviso">
+      <b>Este simulador é educativo.</b> As tarifas embutidas aproximam as Resoluções Homologatórias de 2025 e <b>devem ser conferidas/editadas</b> — ou substituídas pelo CSV oficial da ANEEL (seção 5). A tributação foi simplificada (ICMS + PIS/COFINS "por dentro" sobre os dois ambientes; no ACL o tratamento do ICMS sobre a energia varia por UF e regime). No mercado livre, o custo final <b>deve contabilizar flexibilidade, sazonalização, modulação, perdas, encargos de liquidação (ESS/EER), garantias financeiras, taxa da CCEE e gestão</b> — sem esses itens, a comparação fica artificialmente favorável ao ACL. A abertura da baixa tensão (nov/2027 e nov/2028) é um cronograma previsto na reforma do setor e pode ser ajustado pela regulamentação. Consulte uma comercializadora ou consultoria credenciada antes de decidir a migração.
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    Comparador ACL × ACR · valores sem compromisso, sujeitos a revisão tarifária, bandeiras e condições contratuais. Inspirado em comparadores de mercado liberalizado como o "Comparador de ofertas" da ERSE (Portugal) e o "Comparador CNMC" (Espanha).
+  </div>
+</footer>
+
+<script>
+/* ================= dados de referência =================
+   Aproximações das tarifas homologadas 2025 (sem impostos).
+   tusd_d: R$/kW · demais A4: R$/MWh · b3: R$/kWh (tarifa cheia B3 Convencional) */
+const DISCOS = {
+  "cpfl-paulista":{n:"CPFL Paulista (SP)",uf:"SP",icms:18,tusd_d:30.5,tusd_p:1550,tusd_fp:105,te_p:470,te_fp:295,b3:0.66},
+  "enel-sp":{n:"Enel SP",uf:"SP",icms:18,tusd_d:27.9,tusd_p:1420,tusd_fp:98,te_p:455,te_fp:288,b3:0.62},
+  "edp-sp":{n:"EDP São Paulo",uf:"SP",icms:18,tusd_d:28.7,tusd_p:1460,tusd_fp:100,te_p:452,te_fp:286,b3:0.63},
+  "enel-rj":{n:"Enel RJ",uf:"RJ",icms:20,tusd_d:33.2,tusd_p:1690,tusd_fp:128,te_p:492,te_fp:310,b3:0.78},
+  "light":{n:"Light (RJ)",uf:"RJ",icms:20,tusd_d:34.8,tusd_p:1755,tusd_fp:141,te_p:505,te_fp:318,b3:0.82},
+  "cemig":{n:"Cemig (MG)",uf:"MG",icms:18,tusd_d:29.4,tusd_p:1500,tusd_fp:110,te_p:460,te_fp:292,b3:0.68},
+  "copel":{n:"Copel (PR)",uf:"PR",icms:19,tusd_d:25.6,tusd_p:1310,tusd_fp:88,te_p:438,te_fp:276,b3:0.58},
+  "celesc":{n:"Celesc (SC)",uf:"SC",icms:17,tusd_d:26.8,tusd_p:1355,tusd_fp:92,te_p:445,te_fp:280,b3:0.60},
+  "rge":{n:"RGE (RS)",uf:"RS",icms:17,tusd_d:30.2,tusd_p:1530,tusd_fp:108,te_p:466,te_fp:294,b3:0.67},
+  "ceee":{n:"CEEE Equatorial (RS)",uf:"RS",icms:17,tusd_d:31.5,tusd_p:1600,tusd_fp:118,te_p:472,te_fp:298,b3:0.70},
+  "coelba":{n:"Neoenergia Coelba (BA)",uf:"BA",icms:19,tusd_d:31.0,tusd_p:1580,tusd_fp:115,te_p:468,te_fp:296,b3:0.72},
+  "celpe":{n:"Neoenergia Pernambuco",uf:"PE",icms:18,tusd_d:30.6,tusd_p:1560,tusd_fp:112,te_p:465,te_fp:295,b3:0.71},
+  "cosern":{n:"Neoenergia Cosern (RN)",uf:"RN",icms:18,tusd_d:29.8,tusd_p:1520,tusd_fp:106,te_p:458,te_fp:290,b3:0.66},
+  "neob":{n:"Neoenergia Brasília (DF)",uf:"DF",icms:18,tusd_d:28.0,tusd_p:1430,tusd_fp:98,te_p:450,te_fp:285,b3:0.62},
+  "edp-es":{n:"EDP Espírito Santo",uf:"ES",icms:17,tusd_d:27.5,tusd_p:1400,tusd_fp:96,te_p:448,te_fp:283,b3:0.61},
+  "eq-pa":{n:"Equatorial Pará",uf:"PA",icms:19,tusd_d:36.5,tusd_p:1850,tusd_fp:155,te_p:520,te_fp:330,b3:0.90},
+  "eq-ma":{n:"Equatorial Maranhão",uf:"MA",icms:18,tusd_d:34.0,tusd_p:1720,tusd_fp:140,te_p:500,te_fp:315,b3:0.83},
+  "energisa-mt":{n:"Energisa Mato Grosso",uf:"MT",icms:17,tusd_d:33.5,tusd_p:1700,tusd_fp:135,te_p:495,te_fp:312,b3:0.80},
+  "energisa-ms":{n:"Energisa Mato Grosso do Sul",uf:"MS",icms:17,tusd_d:32.0,tusd_p:1620,tusd_fp:125,te_p:480,te_fp:302,b3:0.75},
+  "amazonas":{n:"Amazonas Energia",uf:"AM",icms:20,tusd_d:37.0,tusd_p:1880,tusd_fp:160,te_p:525,te_fp:335,b3:0.92},
+  "outra":{n:"Outra — digitar valores",uf:"—",icms:18,tusd_d:30.0,tusd_p:1500,tusd_fp:110,te_p:460,te_fp:295,b3:0.70}
+};
+
+const $ = id => document.getElementById(id);
+const fmtBRL = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+const fmtBRL2 = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const fmtNum = (v,d=2)=> v.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+let mode = 'det';            // 'det' | 'bt'
+let bandeira = 'verde';
+let importado = null;        // {sig, reh, ini, a4:{...}, cheia:{b1,b2,b3}} após importar CSV
+
+/* ---------- abertura da baixa tensão ---------- */
+const ABERTURA = { 'b3-com':'2027-11-01', 'b3-ind':'2027-11-01', 'b1':'2028-11-01', 'b2':'2028-11-01' };
+function renderAbertura(){
+  const cls = $('classe-bt').value;
+  const alvo = new Date(ABERTURA[cls]+'T00:00:00');
+  const hoje = new Date();
+  const meses = (alvo.getFullYear()-hoje.getFullYear())*12 + (alvo.getMonth()-hoje.getMonth());
+  const dataFmt = alvo.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  const quem = (cls==='b3-com'||cls==='b3-ind')
+    ? 'comércios e pequenas indústrias'
+    : 'residências e demais consumidores';
+  $('abertura').innerHTML =
+    (meses>0
+      ? `<b>Simulação prospectiva.</b> O mercado livre para ${quem} (baixa tensão) abre em <b>${dataFmt}</b> — <span class="cd">faltam ~${meses} meses</span>. `
+      : `<b>Abertura já alcançada</b> (${dataFmt}) para ${quem}. `)
+    + `Cronograma da reforma do setor: <b>nov/2027</b> para comércios e pequenas indústrias · <b>nov/2028</b> para residências e os demais consumidores. Use esta simulação para se preparar e comparar propostas.`;
+}
+
+/* ---------- bandeira: sugestão heurística por hidrologia ---------- */
+function sugerirBandeira(){
+  const m = new Date().getMonth()+1;
+  if (m>=12 || m<=4) return 'verde';
+  if (m>=5 && m<=7) return 'amarela';
+  return 'verm1';
+}
+function setBandeira(b, auto=false){
+  bandeira = b;
+  document.querySelectorAll('.bandeira').forEach(el=>{
+    el.setAttribute('aria-pressed', el.dataset.b===b ? 'true':'false');
+  });
+  const nomes={verde:'Verde',amarela:'Amarela',verm1:'Vermelha P1',verm2:'Vermelha P2'};
+  $('band-note').innerHTML = (auto
+    ? `<span class="sug">sugestão automática</span> Pela sazonalidade hidrológica típica do mês atual, sugerimos <b>${nomes[b]}</b>. `
+    : `Bandeira selecionada: <b>${nomes[b]}</b>. `)
+    + `Confirme o acionamento oficial do mês no site da ANEEL — a bandeira é divulgada no fim do mês anterior.`;
+  calc();
+}
+
+/* ---------- distribuidora ---------- */
+function popularDiscos(){
+  const sel = $('disco');
+  sel.innerHTML='';
+  for (const [k,d] of Object.entries(DISCOS)){
+    const o=document.createElement('option'); o.value=k; o.textContent=d.n; sel.appendChild(o);
+  }
+  sel.value='cpfl-paulista';
+}
+function tarifaCheiaAtual(){
+  const cls = $('classe-bt').value;
+  const key = (cls==='b1')?'b1':(cls==='b2')?'b2':'b3';
+  if ($('disco').value==='__csv' && importado && importado.cheia[key]!=null) return importado.cheia[key];
+  const d = DISCOS[$('disco').value] || DISCOS['outra'];
+  if (key==='b3') return d.b3;
+  if (key==='b1') return +(d.b3+0.02).toFixed(3);
+  return +(d.b3*0.68).toFixed(3);            // b2 rural (desconto regulatório aproximado)
+}
+function aplicarDisco(){
+  const v = $('disco').value;
+  if (v==='__csv' && importado){
+    const a=importado.a4;
+    if(a.tusd_d!=null) $('tusd-d').value=a.tusd_d;
+    if(a.tusd_p!=null) $('tusd-p').value=a.tusd_p;
+    if(a.tusd_fp!=null)$('tusd-fp').value=a.tusd_fp;
+    if(a.te_p!=null)   $('te-p').value=a.te_p;
+    if(a.te_fp!=null)  $('te-fp').value=a.te_fp;
+    $('origem-chip').textContent='CSV ANEEL · '+importado.sig;
+    $('origem-chip').classList.add('csv');
+  } else {
+    const d = DISCOS[v];
+    $('tusd-d').value=d.tusd_d; $('tusd-p').value=d.tusd_p; $('tusd-fp').value=d.tusd_fp;
+    $('te-p').value=d.te_p; $('te-fp').value=d.te_fp;
+    $('icms').value=d.icms;
+    $('origem-chip').textContent='referência embutida';
+    $('origem-chip').classList.remove('csv');
+  }
+  const cheia = tarifaCheiaAtual();
+  $('tarifa-cheia').value = cheia;
+  $('fio-bt').value = (cheia*0.45).toFixed(3);
+  calc();
+}
+function aplicarClasse(){
+  const cheia = tarifaCheiaAtual();
+  $('tarifa-cheia').value = cheia;
+  $('fio-bt').value = (cheia*0.45).toFixed(3);
+  renderAbertura();
+  calc();
+}
+
+/* ---------- modo ---------- */
+function setMode(m){
+  mode=m;
+  $('mode-det').setAttribute('aria-pressed', m==='det');
+  $('mode-bt').setAttribute('aria-pressed', m==='bt');
+  $('row-det').style.display   = m==='det' ? '' : 'none';
+  $('acr-det').style.display   = m==='det' ? '' : 'none';
+  $('row-bt').style.display    = m==='bt' ? '' : 'none';
+  $('acr-bt').style.display    = m==='bt' ? '' : 'none';
+  $('fio-bt-wrap').style.display = m==='bt' ? '' : 'none';
+  if (m==='bt') renderAbertura();
+  calc();
+}
+
+/* ---------- núcleo do cálculo ---------- */
+function num(id){ const v=parseFloat($(id).value); return isFinite(v)?v:0; }
+
+function bandValor(){                       // R$/100 kWh
+  if (bandeira==='amarela') return num('ad-amarela');
+  if (bandeira==='verm1')  return num('ad-verm1');
+  if (bandeira==='verm2')  return num('ad-verm2');
+  return 0;
+}
+
+function calc(){
+  const taxes = (num('icms')+num('piscofins'))/100;
+  const gross = v => taxes<0.95 ? v/(1-taxes) : v;
+
+  let acr={}, acl={}, consMWh=0;
+
+  if (mode==='det'){
+    consMWh = num('consumo');
+    const p = Math.min(Math.max(num('pctponta'),0),100)/100;
+    const consP = consMWh*p, consFP = consMWh*(1-p);
+    const D = num('demanda');
+
+    acr.dem  = D*num('tusd-d');
+    acr.fio  = consP*num('tusd-p') + consFP*num('tusd-fp');
+    acr.te   = consP*num('te-p')  + consFP*num('te-fp');
+    acr.band = consMWh*10*bandValor();
+
+    const descTUSD = $('incentivada').checked ? 0.5 : 1;
+    acl.fio  = (D*num('tusd-d') + consP*num('tusd-p') + consFP*num('tusd-fp'))*descTUSD;
+    acl.en   = consMWh*(1+num('perdas')/100)*num('preco-en')*(1+num('flex')/100);
+    acl.enc  = consMWh*num('encargos') + num('ccee');
+    acl.ges  = num('gestao');
+  } else {
+    const kwh = num('consumo-kwh'); consMWh = kwh/1000;
+    acr.dem=0;
+    acr.te  = kwh*num('tarifa-cheia')*0.55;          // partição ilustrativa TE≈55%
+    acr.fio = kwh*num('tarifa-cheia')*0.45;
+    acr.band= kwh/100*bandValor();
+    const descTUSD = $('incentivada').checked ? 0.5 : 1;
+    acl.fio = kwh*num('fio-bt')*descTUSD;
+    acl.en  = consMWh*(1+num('perdas')/100)*num('preco-en')*(1+num('flex')/100);
+    acl.enc = consMWh*num('encargos') + num('ccee');
+    acl.ges = num('gestao');
+  }
+
+  const acrBase = acr.dem+acr.fio+acr.te+acr.band;
+  const aclBase = acl.fio+acl.en+acl.enc+acl.ges;
+  acr.tax = gross(acrBase)-acrBase;
+  acl.tax = gross(aclBase)-aclBase;
+  const acrTot = acrBase+acr.tax, aclTot = aclBase+acl.tax;
+
+  renderBreak('acr-break',[
+    ['Demanda (TUSD kW)',acr.dem],['Fio — TUSD consumo',acr.fio],
+    ['Energia — TE',acr.te],['Bandeira tarifária',acr.band],['Impostos',acr.tax]
+  ],acrTot);
+  renderBreak('acl-break',[
+    ['Fio — TUSD (distribuidora)',acl.fio],['Energia (PLD/contrato + perdas + flex.)',acl.en],
+    ['Encargos + CCEE',acl.enc],['Gestão',acl.ges],['Impostos',acl.tax]
+  ],aclTot);
+
+  renderVeredito(acrTot,aclTot,consMWh,{acr,acl});
+  renderResumo(consMWh);
+}
+
+function renderBreak(id,rows,total){
+  const tb=$(id); tb.innerHTML='';
+  rows.forEach(([k,v])=>{
+    if (Math.abs(v)<0.005) return;
+    tb.insertAdjacentHTML('beforeend',`<tr><td>${k}</td><td>${fmtBRL2(v)}</td></tr>`);
+  });
+  tb.insertAdjacentHTML('beforeend',`<tr><td><b>Total mensal</b></td><td><b>${fmtBRL2(total)}</b></td></tr>`);
+}
+
+function renderVeredito(acrTot,aclTot,consMWh,c){
+  const diff = acrTot-aclTot;
+  const per  = acrTot>0 ? diff/acrTot*100 : 0;
+  const numEl=$('ver-num');
+  numEl.textContent=(diff>=0?'− ':'+ ')+fmtBRL2(Math.abs(diff)).replace('R$','R$ ');
+  numEl.className='num '+(diff>=0?'pos':'neg');
+  $('ver-lbl').textContent = diff>=0 ? 'Economia mensal no Mercado Livre' : 'Custo adicional no Mercado Livre';
+  $('ver-per').textContent = `${diff>=0?'−':'+'}${fmtNum(Math.abs(per),1)}% em relação ao cativo`;
+  $('ver-anual').textContent = `Projeção em 12 meses: ${diff>=0?'economia':'acréscimo'} de ${fmtBRL(Math.abs(diff)*12)} · custo efetivo: cativo ${consMWh>0?fmtNum(acrTot/consMWh,0):'—'} R$/MWh × livre ${consMWh>0?fmtNum(aclTot/consMWh,0):'—'} R$/MWh`;
+
+  let texto;
+  if (mode==='bt'){
+    const cls=$('classe-bt').value;
+    const ano=(cls==='b3-com'||cls==='b3-ind')?'novembro/2027':'novembro/2028';
+    texto = diff>=0
+      ? `Com as premissas informadas, o <b>Mercado Livre venceria</b>. Lembre: para a baixa tensão a migração só será possível a partir de <b>${ano}</b> — use este resultado para se preparar e negociar.`
+      : `Com as premissas informadas, o <b>Cativo vence</b> por enquanto. A abertura da baixa tensão (a partir de <b>${ano}</b>) tende a trazer ofertas competitivas — reavalie quando houver propostas reais.`;
+  } else {
+    texto = diff>=0
+      ? `Com as premissas informadas, o <b>Mercado Livre vence</b> este mês. Lembre que o contrato ACL tem prazo, garantias e regras de flexibilidade — avalie a economia no horizonte do contrato, não só no mês.`
+      : `Com as premissas informadas, o <b>Cativo vence</b> este mês. Preços de energia no ACL variam: teste outros cenários de PLD/contrato e de bandeira antes de concluir.`;
+  }
+  $('ver-texto').innerHTML = texto;
+
+  const anyUnchecked=[...document.querySelectorAll('#checklist input')].some(i=>!i.checked);
+  $('ver-caveat').classList.toggle('show',anyUnchecked);
+
+  const max=Math.max(acrTot,aclTot,1);
+  drawBar('g-acr',[
+    ['c-dem',c.acr.dem],['c-fio',c.acr.fio],['c-te',c.acr.te],['c-band',c.acr.band],['c-tax',c.acr.tax]
+  ],max);
+  drawBar('g-acl',[
+    ['c-fio',c.acl.fio],['c-en',c.acl.en],['c-enc',c.acl.enc],['c-ges',c.acl.ges],['c-tax',c.acl.tax]
+  ],max);
+  $('g-acr-val').textContent=fmtBRL(acrTot);
+  $('g-acl-val').textContent=fmtBRL(aclTot);
+  $('legend').innerHTML=[
+    ['c-dem','Demanda'],['c-te','Energia (TE)'],['c-en','Energia ACL'],['c-fio','Fio (TUSD)'],
+    ['c-band','Bandeira'],['c-enc','Encargos'],['c-ges','Gestão'],['c-tax','Impostos']
+  ].map(([cl,l])=>`<span><i class="${cl}"></i>${l}</span>`).join('');
+}
+
+function drawBar(id,segs,max){
+  const el=$(id); el.innerHTML='';
+  segs.forEach(([cl,v])=>{
+    if (v<=0) return;
+    const s=document.createElement('div');
+    s.className='seg '+cl; s.style.width=(v/max*100)+'%';
+    s.title=fmtBRL2(v);
+    el.appendChild(s);
+  });
+}
+
+function renderResumo(consMWh){
+  const usandoCsv = $('disco').value==='__csv' && importado;
+  const nomeDisco = usandoCsv ? importado.sig+' (CSV ANEEL)' : DISCOS[$('disco').value].n+' · '+DISCOS[$('disco').value].uf;
+  const origem = usandoCsv
+    ? `CSV oficial ANEEL · ${importado.reh||'REH não identificada'} · vigência desde ${importado.ini||'—'}`
+    : 'Referência embutida (aprox. 2025) — edite ou importe o CSV oficial';
+  const nomes={verde:'Verde (sem adicional)',amarela:`Amarela (+R$ ${fmtNum(num('ad-amarela'),3)}/100 kWh)`,verm1:`Vermelha P1 (+R$ ${fmtNum(num('ad-verm1'),3)}/100 kWh)`,verm2:`Vermelha P2 (+R$ ${fmtNum(num('ad-verm2'),3)}/100 kWh)`};
+  const clsTxt={'b3-com':'Comercial · B3','b3-ind':'Pequena indústria · B3','b1':'Residencial · B1','b2':'Rural · B2'};
+  const rows = mode==='det' ? [
+    ['Distribuidora',nomeDisco],
+    ['Origem das tarifas',origem],
+    ['Estrutura tarifária','Grupo A4 · THS Verde'],
+    ['TUSD demanda',`R$ ${fmtNum(num('tusd-d'))}/kW`],
+    ['TUSD ponta / fora ponta',`R$ ${fmtNum(num('tusd-p'))} · R$ ${fmtNum(num('tusd-fp'))} /MWh`],
+    ['TE ponta / fora ponta',`R$ ${fmtNum(num('te-p'))} · R$ ${fmtNum(num('te-fp'))} /MWh`],
+    ['Bandeira aplicada',nomes[bandeira]],
+    ['Energia ACL',`R$ ${fmtNum(num('preco-en'))}/MWh + ${fmtNum(num('flex'),1)}% flex. + ${fmtNum(num('perdas'),1)}% perdas`],
+    ['Encargos ACL',`R$ ${fmtNum(num('encargos'))}/MWh + CCEE ${fmtBRL2(num('ccee'))} + gestão ${fmtBRL2(num('gestao'))}`],
+    ['Impostos (simplificado)',`ICMS ${fmtNum(num('icms'),1)}% + PIS/COFINS ${fmtNum(num('piscofins'),1)}% (por dentro)`],
+    ['Consumo simulado',`${fmtNum(consMWh,0)} MWh/mês · ${fmtNum(num('pctponta'),1)}% na ponta · ${fmtNum(num('demanda'),0)} kW`]
+  ] : [
+    ['Distribuidora',nomeDisco],
+    ['Origem das tarifas',origem],
+    ['Estrutura tarifária',`Baixa tensão · ${clsTxt[$('classe-bt').value]} · Convencional`],
+    ['Abertura do mercado livre',($('classe-bt').value.startsWith('b3'))?'novembro/2027':'novembro/2028'],
+    ['Tarifa cheia',`R$ ${fmtNum(num('tarifa-cheia'),3)}/kWh (sem impostos)`],
+    ['Bandeira aplicada',nomes[bandeira]],
+    ['Energia ACL',`R$ ${fmtNum(num('preco-en'))}/MWh + ${fmtNum(num('flex'),1)}% flex. + ${fmtNum(num('perdas'),1)}% perdas`],
+    ['Fio estimado ACL',`R$ ${fmtNum(num('fio-bt'),3)}/kWh`],
+    ['Impostos (simplificado)',`ICMS ${fmtNum(num('icms'),1)}% + PIS/COFINS ${fmtNum(num('piscofins'),1)}% (por dentro)`],
+    ['Consumo simulado',`${fmtNum(num('consumo-kwh'),0)} kWh/mês`]
+  ];
+  $('kv-body').innerHTML = rows.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('');
+}
+
+/* ================= importador CSV da ANEEL ================= */
+const csvAgents = new Map();          // SigAgente -> rows filtradas
+
+const norm = s => (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+
+function splitCsv(line, delim){
+  if (!line.includes('"')) return line.split(delim);
+  const out=[]; let cur='', q=false;
+  for (let i=0;i<line.length;i++){
+    const ch=line[i];
+    if (ch==='"'){ q=!q; continue; }
+    if (ch===delim && !q){ out.push(cur); cur=''; continue; }
+    cur+=ch;
+  }
+  out.push(cur);
+  return out;
+}
+function parseNum(s){
+  if (s==null) return NaN;
+  s=String(s).trim();
+  if (!s) return NaN;
+  if (s.includes(',')) s=s.replace(/\./g,'').replace(',','.');
+  return parseFloat(s);
+}
+function parseDate(s){
+  if (!s) return null;
+  s=String(s).trim();
+  let m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return new Date(+m[1],+m[2]-1,+m[3]);
+  m=s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+  if (m) return new Date(+m[3],+m[2]-1,+m[1]);
+  return null;
+}
+
+async function lerCsv(file){
+  const status=$('csv-status');
+  status.className='csv-status';
+  status.textContent='Lendo arquivo… 0%';
+  $('csv-apply').classList.remove('show');
+  $('csv-meta').textContent='';
+  csvAgents.clear();
+
+  // detectar codificação: UTF-8 com fallback Latin-1
+  let enc='utf-8';
+  try{
+    const head=new TextDecoder('utf-8').decode(await file.slice(0,65536).arrayBuffer());
+    if (head.includes('\uFFFD')) enc='iso-8859-1';
+  }catch(e){ enc='iso-8859-1'; }
+
+  const decoder=new TextDecoder(enc);
+  const CHUNK=4*1024*1024;
+  let rest='', header=null, idx=null, delim=';', total=0, kept=0;
+
+  function processarLinha(line){
+    if (!line.trim()) return;
+    if (!header){
+      delim = (line.split(';').length >= line.split(',').length) ? ';' : ',';
+      header = splitCsv(line, delim).map(norm);
+      idx={};
+      header.forEach((h,i)=>{
+        if (h.includes('sigagente')) idx.sig=i;
+        else if (h.includes('basetarifaria')) idx.base=i;
+        else if (h.includes('subgrupo')) idx.sub=i;
+        else if (h.includes('modalidade')) idx.mod=i;
+        else if (h.includes('subclasse')) idx.subclasse=i;
+        else if (h.includes('classe')) idx.classe=i;
+        else if (h.includes('detalhe')) idx.det=i;
+        else if (h.includes('posto')) idx.posto=i;
+        else if (h.includes('unidade')) idx.unid=i;
+        else if (h.includes('tusd')) idx.tusd=i;
+        else if (h==='vlrte'||h.endsWith('vlrte')||(h.includes('vlr')&&h.endsWith('te'))) idx.te=i;
+        else if (h.includes('iniciovigencia')) idx.ini=i;
+        else if (h.includes('fimvigencia')) idx.fim=i;
+        else if (h.includes('reh')) idx.reh=i;
+      });
+      if (idx.sig==null || idx.tusd==null){
+        throw new Error('Cabeçalho não reconhecido — o arquivo não parece ser o CSV de tarifas homologadas da ANEEL.');
+      }
+      return;
+    }
+    total++;
+    const c = splitCsv(line, delim);
+    const base = norm(c[idx.base]||'');
+    if (!base.includes('aplicacao')) return;                     // só Tarifa de Aplicação
+    const sub = (c[idx.sub]||'').trim().toUpperCase();
+    if (!['A4','B1','B2','B3'].includes(sub)) return;            // só subgrupos usados aqui
+    const row={
+      sub,
+      mod: norm(c[idx.mod]||''),
+      classe: norm(idx.classe!=null?c[idx.classe]:''),
+      subclasse: norm(idx.subclasse!=null?c[idx.subclasse]:''),
+      det: norm(idx.det!=null?c[idx.det]:''),
+      posto: norm(idx.posto!=null?c[idx.posto]:''),
+      unid: norm(idx.unid!=null?c[idx.unid]:''),
+      tusd: parseNum(c[idx.tusd]),
+      te: idx.te!=null?parseNum(c[idx.te]):0,
+      ini: idx.ini!=null?(c[idx.ini]||'').trim():'',
+      fim: idx.fim!=null?(c[idx.fim]||'').trim():'',
+      reh: idx.reh!=null?(c[idx.reh]||'').trim():''
+    };
+    const sig=(c[idx.sig]||'').trim();
+    if (!sig) return;
+    if (!csvAgents.has(sig)) csvAgents.set(sig,[]);
+    csvAgents.get(sig).push(row);
+    kept++;
+  }
+
+  for (let off=0; off<file.size; off+=CHUNK){
+    const buf=await file.slice(off,off+CHUNK).arrayBuffer();
+    const text=rest+decoder.decode(buf,{stream:true});
+    const lines=text.split(/\r?\n/);
+    rest=lines.pop();
+    for (const ln of lines) processarLinha(ln);
+    status.textContent=`Lendo arquivo… ${Math.min(99,Math.round((off+CHUNK)/file.size*100))}% · ${kept.toLocaleString('pt-BR')} tarifas encontradas`;
+    await new Promise(r=>setTimeout(r));
+  }
+  const tail=rest+decoder.decode();
+  if (tail.trim()) processarLinha(tail);
+
+  if (csvAgents.size===0){
+    throw new Error('Nenhuma "Tarifa de Aplicação" dos subgrupos A4/B1/B2/B3 foi encontrada no arquivo.');
+  }
+  const sel=$('csv-agente'); sel.innerHTML='';
+  [...csvAgents.keys()].sort((a,b)=>a.localeCompare(b,'pt-BR')).forEach(sig=>{
+    const o=document.createElement('option'); o.value=sig; o.textContent=`${sig} (${csvAgents.get(sig).length} linhas)`; sel.appendChild(o);
+  });
+  status.className='csv-status ok';
+  status.textContent=`✓ ${csvAgents.size} distribuidoras · ${kept.toLocaleString('pt-BR')} tarifas de aplicação carregadas.`;
+  $('csv-apply').classList.add('show');
+}
+
+function aplicarCsv(){
+  const sig=$('csv-agente').value;
+  const rows=csvAgents.get(sig)||[];
+  if (!rows.length) return;
+
+  // vigência: prefere linhas válidas hoje; senão, a data de início mais recente
+  const hoje=new Date();
+  const comIni=rows.filter(r=>parseDate(r.ini));
+  let vigentes=comIni.filter(r=>{
+    const i=parseDate(r.ini), f=parseDate(r.fim);
+    return i && i<=hoje && (!f || f>=hoje);
+  });
+  let pool=vigentes.length?vigentes:comIni;
+  if (!pool.length) pool=rows;
+  let maxIni=null;
+  pool.forEach(r=>{const d=parseDate(r.ini); if(d&&(!maxIni||d>maxIni))maxIni=d;});
+  if (maxIni) pool=pool.filter(r=>{const d=parseDate(r.ini);return d&&d.getTime()===maxIni.getTime();});
+
+  const a4={}, cheia={};
+  // -------- Grupo A4 · modalidade Verde --------
+  const verde=pool.filter(r=>r.sub==='A4'&&r.mod.includes('verde'));
+  verde.forEach(r=>{
+    const ehMWh=r.unid.includes('mwh');
+    if (!ehMWh && r.unid.includes('kw')){ if(isFinite(r.tusd)) a4.tusd_d=r.tusd; return; }
+    if (!ehMWh) return;
+    if (r.posto.includes('fora')){ if(isFinite(r.tusd))a4.tusd_fp=r.tusd; if(isFinite(r.te))a4.te_fp=r.te; }
+    else if (r.posto.includes('ponta')){ if(isFinite(r.tusd))a4.tusd_p=r.tusd; if(isFinite(r.te))a4.te_p=r.te; }
+  });
+  // -------- Grupo B · Convencional --------
+  function melhorB(sub, classes){
+    let cands=pool.filter(r=>r.sub===sub&&r.mod.includes('convencional')&&r.unid.includes('mwh')&&isFinite(r.tusd));
+    if (!cands.length) return null;
+    const pref=(r,cl)=>(r.classe.includes(cl)?4:0)+(r.subclasse.includes('naoseaplica')||!r.subclasse?2:0)+(r.det.includes('naoseaplica')||!r.det?1:0);
+    let best=null,score=-1;
+    cands.forEach(r=>{
+      const s=Math.max(...classes.map(cl=>pref(r,cl)));
+      if (s>score){score=s;best=r;}
+    });
+    return best?+( (best.tusd+(isFinite(best.te)?best.te:0))/1000 ).toFixed(4):null;
+  }
+  cheia.b1=melhorB('B1',['residencial']);
+  cheia.b2=melhorB('B2',['rural']);
+  cheia.b3=melhorB('B3',['comercial','industrial']);
+
+  const achouA=Object.keys(a4).length>0, achouB=Object.values(cheia).some(v=>v!=null);
+  if (!achouA && !achouB){
+    $('csv-status').className='csv-status err';
+    $('csv-status').textContent='Não foi possível extrair tarifas A4 Verde nem B Convencional para esta distribuidora.';
+    return;
+  }
+
+  const ref=pool.find(r=>r.reh)||pool[0];
+  importado={
+    sig,
+    reh: ref&&ref.reh ? ref.reh : '',
+    ini: maxIni ? maxIni.toLocaleDateString('pt-BR') : '',
+    a4, cheia
+  };
+
+  // registra/seleciona a opção "CSV" no seletor de distribuidora
+  let opt=[...$('disco').options].find(o=>o.value==='__csv');
+  if (!opt){ opt=document.createElement('option'); opt.value='__csv'; $('disco').prepend(opt); }
+  opt.textContent=`★ ${sig} — importado do CSV ANEEL`;
+  $('disco').value='__csv';
+  aplicarDisco();
+
+  const partes=[];
+  if (achouA) partes.push('A4 Verde (TUSD demanda/ponta/fora ponta + TE)');
+  ['b1','b2','b3'].forEach(k=>{ if(cheia[k]!=null) partes.push(k.toUpperCase()+` Convencional (R$ ${fmtNum(cheia[k],4)}/kWh)`); });
+  $('csv-meta').innerHTML=`<b>Aplicado:</b> ${partes.join(' · ')}<br><b>Vigência:</b> desde ${importado.ini||'—'} · <b>${importado.reh||'REH não identificada no arquivo'}</b><br>Impostos (ICMS/PIS/COFINS) não vêm no CSV — confira os campos da seção 1.`;
+  $('csv-status').className='csv-status ok';
+  $('csv-status').textContent=`✓ Tarifas de ${sig} aplicadas ao simulador.`;
+}
+
+/* ---------- ligação de eventos ---------- */
+popularDiscos();
+aplicarDisco();
+setBandeira(sugerirBandeira(), true);
+setMode('det');
+renderAbertura();
+
+$('disco').addEventListener('change',aplicarDisco);
+$('classe-bt').addEventListener('change',aplicarClasse);
+document.querySelectorAll('.bandeira').forEach(b=>b.addEventListener('click',()=>setBandeira(b.dataset.b)));
+$('mode-det').addEventListener('click',()=>setMode('det'));
+$('mode-bt').addEventListener('click',()=>setMode('bt'));
+document.querySelectorAll('input:not(#csv-file)').forEach(i=>i.addEventListener('input',calc));
+$('btn-reset').addEventListener('click',()=>{
+  if ($('disco').value==='__csv') $('disco').value='cpfl-paulista';
+  aplicarDisco();
+});
+
+/* importador */
+$('csv-file').addEventListener('change',e=>{
+  const f=e.target.files[0];
+  if (!f) return;
+  lerCsv(f).catch(err=>{
+    $('csv-status').className='csv-status err';
+    $('csv-status').textContent='✗ '+err.message;
+  });
+});
+const dz=$('dropzone');
+['dragover','dragenter'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag');}));
+['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag');}));
+dz.addEventListener('drop',e=>{
+  const f=e.dataTransfer.files[0];
+  if (!f) return;
+  lerCsv(f).catch(err=>{
+    $('csv-status').className='csv-status err';
+    $('csv-status').textContent='✗ '+err.message;
+  });
+});
+$('csv-aplicar').addEventListener('click',aplicarCsv);
+</script>
+</body>
+</html>
